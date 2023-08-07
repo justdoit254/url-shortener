@@ -39,6 +39,10 @@ export const ShortenItButton = styled.button`
     font-size: 1.1em;
     font-weight: 700;
     cursor: pointer;
+    &:hover {
+        transform: scale(1.03);
+        transition: all, 0.5s;
+    }
 `
 
 export const CopyButton = styled.button`

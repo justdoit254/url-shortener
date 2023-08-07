@@ -1,57 +1,33 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyledForm, StyledMain, Info, Card1, Card2, Card3, Icon, StyledCards, Bridge, CTA, StyledOutput, LongerLink, ShorterLink, NewLink } from "./styles/Main.styles";
 import { CopyButton, GetStartedButton, ShortenItButton } from "./styles/Button.styles";
 
 const Main = () => {
     const [longLink, setLongLink] = React.useState("");
     const [links, setLinks] = React.useState([]);
-    const [clicked, setClicked] = React.useState(false)
-    // const [shortLinks, setShortLinks] = React.useState([]);
-    // const [output, setOutput] = React.useState("");
-    // const [idx, setIdx] = React.useState(-1);
-    // const [links, setLinks] = React.useState({longLinks: [], shortLinks: []})  //Object of arrays of links
-    // const [links, setLinks] = React.useState([[],[]])  //Object of arrays of links
-
+    const [clicked, setClicked] = React.useState("")
     function clipboardCopy(link) {
         navigator.clipboard.writeText(`${link.full_short_link}`)
+        // alert("Copied the link to the clipboard");
     }
 
     const showLinks = links.map(link => {
         return (
             <StyledOutput>
                 <LongerLink>{link.original_link}</LongerLink>
-                {/* <LongerLink>{links[links.length - 1]}</LongerLink> */}
-                {/* {links.map (link => (<LongerLink>{link}</LongerLink>))} */}
+                {/* <Output link={link} clicked={clicked} setClicked={setClicked}/> */}
                 <NewLink>
                     <ShorterLink>{link.full_short_link}</ShorterLink>
                     <CopyButton onClick={() => {
                         clipboardCopy(link);
-                        setClicked(prevClicked => !prevClicked);
+                        setClicked(link.code);
                     }}>
-                        {clicked ? "Copied!" : "Copy"}
+                        {link.code === clicked ? "Copied!" : "Copy"}
                     </CopyButton>
-                    {/* <CopyButton onClick={() => {
-                            navigator.clipboard.writeText(`${link.full_short_link}`)
-                    }}>
-                        {buttonText}
-                    </CopyButton> */}
                 </NewLink>
             </StyledOutput>
         )
     })
-    // const showLinks = shortLinks.map(singleLink => {
-    //     return (
-    //         <StyledOutput>
-    //             <LongerLink>{links[links.length - 1]}</LongerLink>
-    //             {/* {links.map (link => (<LongerLink>{link}</LongerLink>))} */}
-    //             <NewLink>
-    //                 <ShorterLink>{singleLink}</ShorterLink>
-    //                 <CopyButton>Copy</CopyButton>
-    //             </NewLink>
-    //         </StyledOutput>
-    //     )
-    // })
-
 
     const fetchShortLink = () => {
         fetch(`https://api.shrtco.de/v2/shorten?url=${longLink}`)
@@ -59,34 +35,8 @@ const Main = () => {
             .then(data => {
                 console.log(data.result.full_short_link)
                 setLinks(prevLinks => [data.result, ...prevLinks])
-                // setShortLinks(prevShortLinks => [...prevShortLinks, data.result.full_short_link])
-                // setLinks(prevLink => {
-                //     return [
-                //         ...prevLink,
-                //         shortLinks: (prevShortLinks => [data.result.full_short_link, ...prevShortLinks])
-                //     ]
-                // })
-                // setOutput(data.result.full_short_link)
-                // console.log(output)
             })
     }
-
-    // React.useEffect(() => {
-    //     fetchShortLink()
-    // }, [])
-
-    // function handleChange(event) {
-    //    setLinks(prevLink => (
-    //     [...prevLink, event.target.value]
-    //    ))
-    // //    setIdx(prevIdx => prevIdx + 1);
-    //     //  setLinks(prevLink => {
-    //     //     return {
-    //     //         ...prevLink,
-    //     //         longLinks: (prevLongLinks => [event.target.value, ...prevLongLinks])
-    //     //     }
-    //     //  })
-    // }
 
     return (
         <StyledMain>
