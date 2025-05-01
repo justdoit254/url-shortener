@@ -1,60 +1,79 @@
 import React from "react";
-import { StyledForm, StyledMain, Info, Card1, Card2, Card3, Icon, StyledCards, Bridge, CTA, StyledOutput, LongerLink, ShorterLink, NewLink, ErrorMsg } from "./styles/Main.styles";
-import { CopyButton, GetStartedButton, ShortenItButton } from "./styles/Button.styles";
+import {
+    StyledForm,
+    StyledMain,
+    Info,
+    Card1,
+    Card2,
+    Card3,
+    Icon,
+    StyledCards,
+    Bridge,
+    CTA,
+    StyledOutput,
+    LongerLink,
+    ShorterLink,
+    NewLink,
+    ErrorMsg,
+} from "./styles/Main.styles";
+import {
+    CopyButton,
+    GetStartedButton,
+    ShortenItButton,
+} from "./styles/Button.styles";
 
 const Main = () => {
     const [longLink, setLongLink] = React.useState("");
     const [links, setLinks] = React.useState([]);
-    const [clicked, setClicked] = React.useState("")
-    const [error, setError] = React.useState(false)
+    const [clicked, setClicked] = React.useState("");
+    const [error, setError] = React.useState(false);
     function clipboardCopy(link) {
-        navigator.clipboard.writeText(`${link.full_short_link}`)
+        navigator.clipboard.writeText(`${link.full_short_link}`);
         // alert("Copied the link to the clipboard");
     }
     //Making random changes in this file!!
 
-    const showLinks = links.map(link => {
+    const showLinks = links.map((link) => {
         return (
             <StyledOutput>
                 <LongerLink>{link.original_link}</LongerLink>
                 <NewLink>
                     <ShorterLink>{link.full_short_link}</ShorterLink>
-                    <CopyButton 
+                    <CopyButton
                         onClick={() => {
-                        clipboardCopy(link);
-                        setClicked(link.code);
+                            clipboardCopy(link);
+                            setClicked(link.code);
                         }}
-                        // style = {{backgroundColor: link.code === clicked ? "${({theme}) => theme.colors.darkViolet}" : "${({theme}) => theme.colors.cyan}"}}
+                    // style = {{backgroundColor: link.code === clicked ? "${({theme}) => theme.colors.darkViolet}" : "${({theme}) => theme.colors.cyan}"}}
                     >
                         {link.code === clicked ? "Copied!" : "Copy"}
                     </CopyButton>
                 </NewLink>
             </StyledOutput>
-        )
-    })
-
+        );
+    });
 
     const handleError = (response) => {
         if (!response.ok) {
-            throw Error(response.error)
+            throw Error(response.error);
         } else {
-            return response.json()
+            return response.json();
         }
-    }
+    };
 
     const fetchShortLink = () => {
         fetch(`https://api.shrtco.de/v2/shorten?url=${longLink}`)
             .then(handleError)
-            .then(data => {
-                console.log(data)
-                setLinks(prevLinks => [data.result, ...prevLinks])
-                setError(prevError => !prevError)
+            .then((data) => {
+                console.log(data);
+                setLinks((prevLinks) => [data.result, ...prevLinks]);
+                setError((prevError) => !prevError);
             })
-            .catch(error => {
-                console.log(error)
-                setError(prevError => !prevError)
-            })
-    }
+            .catch((error) => {
+                console.log(error);
+                setError((prevError) => !prevError);
+            });
+    };
 
     return (
         <StyledMain>
@@ -68,7 +87,7 @@ const Main = () => {
                     value={longLink}
                     onChange={e => setLongLink(e.target.value)}
                     style={{
-                        border: error===true ? "3px solid hsl(0, 87%, 67%)" : "none",
+                        border: error === true ? "3px solid hsl(0, 87%, 67%)" : "none",
                         // color: error === true ? "hsl(0, 87%, 67%)" : "${({theme}) => theme.colors.gray}"
                     }}
                 />
@@ -104,6 +123,7 @@ const Main = () => {
                     <p>Improve brand awareness and content discoverability through customizable links, supercharging audience engagement.</p>
                 </Card3>
             </StyledCards>
+            <p>Dummy text here to test the branch.</p>
             <CTA>
                 <h2>Boost your links today</h2>
                 <GetStartedButton>Get Started</GetStartedButton>
@@ -112,4 +132,4 @@ const Main = () => {
     )
 }
 
-export default Main
+export default Main;
