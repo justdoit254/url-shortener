@@ -1,11 +1,12 @@
 import React from "react";
-import { StyledForm, StyledMain, Info, Card1, Card2, Card3, Icon, StyledCards, Bridge, CTA, StyledOutput, LongerLink, ShorterLink, NewLink } from "./styles/Main.styles";
+import { StyledForm, StyledMain, Info, Card1, Card2, Card3, Icon, StyledCards, Bridge, CTA, StyledOutput, LongerLink, ShorterLink, NewLink, ErrorMsg } from "./styles/Main.styles";
 import { CopyButton, GetStartedButton, ShortenItButton } from "./styles/Button.styles";
 
 const Main = () => {
     const [longLink, setLongLink] = React.useState("");
     const [links, setLinks] = React.useState([]);
     const [clicked, setClicked] = React.useState("")
+    const [error, setError] = React.useState(false)
     function clipboardCopy(link) {
         navigator.clipboard.writeText(`${link.full_short_link}`)
         // alert("Copied the link to the clipboard");
@@ -15,13 +16,15 @@ const Main = () => {
         return (
             <StyledOutput>
                 <LongerLink>{link.original_link}</LongerLink>
-                {/* <Output link={link} clicked={clicked} setClicked={setClicked}/> */}
                 <NewLink>
                     <ShorterLink>{link.full_short_link}</ShorterLink>
-                    <CopyButton onClick={() => {
+                    <CopyButton 
+                        onClick={() => {
                         clipboardCopy(link);
                         setClicked(link.code);
-                    }}>
+                        }}
+                        // style = {{backgroundColor: link.code === clicked ? "${({theme}) => theme.colors.darkViolet}" : "${({theme}) => theme.colors.cyan}"}}
+                    >
                         {link.code === clicked ? "Copied!" : "Copy"}
                     </CopyButton>
                 </NewLink>
@@ -29,12 +32,26 @@ const Main = () => {
         )
     })
 
+
+    const handleError = (response) => {
+        if (!response.ok) {
+            throw Error(response.error)
+        } else {
+            return response.json()
+        }
+    }
+
     const fetchShortLink = () => {
         fetch(`https://api.shrtco.de/v2/shorten?url=${longLink}`)
-            .then(response => response.json())
+            .then(handleError)
             .then(data => {
-                console.log(data.result.full_short_link)
+                console.log(data)
                 setLinks(prevLinks => [data.result, ...prevLinks])
+                setError(prevError => !prevError)
+            })
+            .catch(error => {
+                console.log(error)
+                setError(prevError => !prevError)
             })
     }
 
@@ -49,9 +66,14 @@ const Main = () => {
                     // value={links[links.length - 1]}
                     value={longLink}
                     onChange={e => setLongLink(e.target.value)}
+                    style={{
+                        border: error===true ? "3px solid hsl(0, 87%, 67%)" : "none",
+                        // color: error === true ? "hsl(0, 87%, 67%)" : "${({theme}) => theme.colors.gray}"
+                    }}
                 />
                 <ShortenItButton type="submit" onClick={fetchShortLink}>Shorten It!</ShortenItButton>
             </StyledForm>
+            {error && <ErrorMsg>Please add a link</ErrorMsg>}
             {showLinks}
             <Info>
                 <h2>Advanced Statistics</h2>
