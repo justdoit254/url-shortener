@@ -32,6 +32,17 @@ export const StyledForm = styled.div`
     }
 `
 
+export const ErrorMsg = styled.p`
+    position: relative;
+    margin: 0;
+    top: -75px;
+    left: 200px;
+    color: ${({theme}) => theme.colors.red};
+    font-size: 0.8rem;
+    font-style: italic;
+    padding-top: 5px;
+`
+
 export const Info = styled.div`
     display: flex;
     flex-direction: column;
